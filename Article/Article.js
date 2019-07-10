@@ -113,53 +113,76 @@ const data = [
 
 */
 
-class Article {
-  constructor(domElement) {
-    // assign this.domElement to the passed in domElement
-    this.domElement = domElement;
-    console.log(this.domElement);
-    // create a reference to the ".expandButton" class. 
-    this.expandButton = this.domElement.querySelector('.article .expandButton');
-    // Using your expandButton reference, update the text on your expandButton to say "expand"
-    this.expandButton.textContent = 'Click to Expand';
+const articles = document.querySelector('.artuckes')
 
 
-    // Set a click handler on the expandButton reference, calling the expandArticle method.
-    this.expandButton.addEventListener('click', () => this.expandArticle());
+panelData.forEach(data => {
+  console.log('creating panel:', data.title)
+  articles.appendChild(createPanel(data.title, data.firstParagraph, data.secondParagraph, data.thirdParagraph))
+})
 
-     this.dispose = this.domElement.querySelector('.article .dispose');
-    this.dispose.textContent = 'Remove article from feed';
-    this.dispose.addEventListener('click', () => this.eliminate());
-  }
+function createPanel(title, firstParagraph, secondParagraph, thirdParagraph) {
+  // define new elements
+  const panel = document.createElement('div');
+  const panelBar = document.createElement('div');
+  const panelTitle = document.createElement('h2');
+  const buttonPanel = document.createElement('div');
+  const buttonOpen = document.createElement('button');
+  const buttonClose = document.createElement('button');
+  const panelContent = document.createElement('div');
+  
+  // Setup structure of elements
+  panel.appendChild(panelBar)
+  panel.appendChild(panelContent1, panelContent2, panelContent3)
+  panelBar.appendChild(panelTitle)
+  panelBar.appendChild(buttonPanel)
+  buttonPanel.appendChild(buttonOpen)
+  buttonPanel.appendChild(buttonClose)
+  
+  // set class names
+  panel.classList.add('panel')
+  panelBar.classList.add('panel-bar')
+  buttonPanel.classList.add('panel-buttons')
+  buttonOpen.classList.add('panel-btn-open')
+  buttonClose.classList.add('panel-btn-close', 'hide-btn')
+  panelContent.classList.add('panel-content')
+  
+  // set text content
+  buttonOpen.textContent = 'Open'
+  buttonClose.textContent = 'Close'
+  panelContent1.textContent = firstParagraph
+  panelContent2.textContent = secondParagraph
+  panelContent3.textContent = thirdParagraph
+  panelTitle.textContent = title
+  
+  // button events
+  // ❌ buttonPanel.querySelectorAll('button').forEach(btn => btn.addEventListener('click', clickHandler))
+  // ✅ buttonPanel.addEventListener('click', clickHandler)
+  buttonPanel.addEventListener('click', event => {
+    console.log('button clicked', event.target)
+    // 1. toggle hide-btn on BOTH buttons
+    buttonOpen.classList.toggle('hide-btn')
+    buttonClose.classList.toggle('hide-btn')
+    // 2. Change visibility of the content w/ 'toggle-on'
+    panelContent.classList.toggle('toggle-on')
+  })
+  
+  return panel
+}
 
-  expandArticle() {
-    // Using our reference to the domElement, toggle a class to expand or hide the article.
-    this.domElement.classList.toggle('article-open');
-    if (this.domElement.classList.contains('article-open')) {
-      TweenMax.fromTo((this.domElement), .7, {css:{height: "50px"}}, {css:{height: "400px"}});
-      this.expandButton.textContent = 'Click to Close';
-    } else {
-      TweenMax.fromTo((this.domElement), .7, {css:{height: "400px"}}, {css:{height: "50px"}});
-      this.expandButton.textContent = 'Click to Expand';
-
-     }
-
-   }
-
-   eliminate() {
-    TweenMax.to((this.domElement), .7, {css:{x: 400, opacity: "0", display: "none"}})
-
-
-   }	  }
-
-
-/* START HERE: 
-
-- Select all classes named ".article" and assign that value to the articles variable.  
-
-- With your selection in place, now chain .forEach() on to the articles variable to iterate over the articles NodeList and create a new instance of Article by passing in each article as a parameter to the Article class.
-
-*/
-
-const articles = document.querySelectorAll('.articles .article')
-articles.forEach(x => new Article(x));
+function createPanel2(title, content) {
+  const panel = document.createElement('div')
+  panel.innerHTML = `<div class="panel">
+  <div class="panel-bar">
+    <h3>${title}</h3>
+    <div class="panel-buttons">
+      <button class="panel-btn-open">Open</button>
+      <button class="panel-btn-close hide-btn">Close</button>
+    </div>
+  </div>
+  <div class="panel-content">
+    ${content}
+  </div>
+</div>`
+  return panel
+}
